@@ -1,14 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:int="http://www.springframework.org/schema/integration"
-  xmlns:int-sftp="http://www.springframework.org/schema/integration/sftp"
-  xsi:schemaLocation="
-   http://www.springframework.org/schema/beans
-   http://www.springframework.org/schema/beans/spring-beans.xsd
-   http://www.springframework.org/schema/integration
-   http://www.springframework.org/schema/integration/spring-integration.xsd
-   http://www.springframework.org/schema/integration/sftp
-   http://www.springframework.org/schema/integration/sftp/spring-integration-sftp.xsd">
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:int="http://www.springframework.org/schema/integration"
+	xmlns:int-sftp="http://www.springframework.org/schema/integration/sftp"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+  						 http://www.springframework.org/schema/beans/spring-beans.xsd
+  						 http://www.springframework.org/schema/integration
+   						 http://www.springframework.org/schema/integration/spring-integration.xsd
+  						 http://www.springframework.org/schema/integration/sftp
+  						 http://www.springframework.org/schema/integration/sftp/spring-integration-sftp.xsd">
+
+	<bean id="sftpSessionFactory"
+		class="org.springframework.integration.sftp.session.DefaultSftpSessionFactory">
+		<property name="host" value="localhost" />
+		<property name="port" value="22" />
+	</bean>
+
+	<bean id="cachingSessionFactory"
+		class="org.springframework.integration.file.remote.session.CachingSessionFactory">
+		<constructor-arg ref="sftpSessionFactory" />
+		<property name="sessionCacheSize" value="10" />
+		<property name="sessionWaitTimeout" value="1000" />
+	</bean>
+
+	<int-sftp:inbound-channel-adapter id="sftpAdapterAutoCreate"
+		session-factory="sftpSessionFactory" channel="requestChannel"
+		filename-pattern="*.txt" remote-directory="/foo/bar"
+		preserve-timestamp="true" local-directory="file:target/foo"
+		auto-create-local-directory="true"
+		local-filename-generator-expression="#this.toUpperCase() + '.a'"
+		local-filter="myFilter" temporary-file-suffix=".writing"
+		delete-remote-files="false">
+		<int:poller fixed-rate="1000" />
+	</int-sftp:inbound-channel-adapter>
+
+	<int-sftp:inbound-channel-adapter id="sftpInboundAdapter"
+		channel="receiveChannel" session-factory="sftpSessionFactory" filter="customFilter"
+		local-directory="file:/local-test-dir" remote-directory="/remote-test-dir">
+		<int:poller fixed-rate="1000" max-messages-per-poll="10"
+			task-executor="executor" />
+	</int-sftp:inbound-channel-adapter>
+
+	<bean id="customFilter" class="org.foo.CustomFilter" />
+
+	<int-sftp:outbound-channel-adapter
+		id="sftpOutboundAdapter" session-factory="sftpSessionFactory" channel="inputChannel"
+		charset="UTF-8" remote-file-separator="/" remote-directory="foo/bar"
+		remote-filename-generator-expression="payload.getName() + '-foo'"
+		filename-generator="fileNameGenerator" use-temporary-filename="true"
+		mode="REPLACE">
+	</int-sftp:outbound-channel-adapter>
+		
+	<int-sftp:outbound-gateway id="gateway1"
+		session-factory="ftpSessionFactory"
+		request-channel="inbound1"
+		command="ls"
+		command-options="-1"
+		expression="payload"
+		reply-channel="toSplitter">
+	</int-sftp:outbound-gateway>
 
 </beans>

@@ -8,6 +8,8 @@
   </appender>
    
   <logger name="com.base22" level="TRACE"/>   
+  
+  <logger name="org.springframework.integration.file" level="TRACE"/>
  
   <root level="INFO">
     <appender-ref ref="STDOUT" />
