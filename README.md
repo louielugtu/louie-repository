@@ -1,2 +1,2 @@
 # louie-repository
-Public repository used for R&amp;D
+Public repository dedicated to be used for R&amp;D by the author, louie.lugtu.
