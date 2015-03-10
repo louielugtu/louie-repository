@@ -10,8 +10,11 @@
   <logger name="com.base22" level="TRACE"/>   
   
   <logger name="org.springframework.integration.file" level="TRACE"/>
+  
+  <logger name="category.com.jcraft.jsch" level="TRACE" />
+  
  
-  <root level="INFO">
+  <root level="TRACE">
     <appender-ref ref="STDOUT" />
   </root>
 </configuration>

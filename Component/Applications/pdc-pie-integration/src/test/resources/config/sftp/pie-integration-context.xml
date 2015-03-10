@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:int="http://www.springframework.org/schema/integration"
+	xmlns:int-sftp="http://www.springframework.org/schema/integration/sftp"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+  						 http://www.springframework.org/schema/beans/spring-beans.xsd
+  						 http://www.springframework.org/schema/context
+  						 http://www.springframework.org/schema/context/spring-context.xsd
+  						 http://www.springframework.org/schema/integration
+   						 http://www.springframework.org/schema/integration/spring-integration.xsd
+  						 http://www.springframework.org/schema/integration/sftp
+  						 http://www.springframework.org/schema/integration/sftp/spring-integration-sftp.xsd">
+
+	<context:property-placeholder location="classpath:/config/sftp/server.properties" />
+
+	<bean id="sftpSessionFactory"
+		class="org.springframework.integration.sftp.session.DefaultSftpSessionFactory">
+		<property name="host" value="${server.host}" />
+		<property name="port" value="${server.port}" />
+		<property name="user" value="${server.username}" />
+		<property name="password" value="${server.password}"/>
+	</bean>
+
+	<bean id="cachingSessionFactory"
+		class="org.springframework.integration.file.remote.session.CachingSessionFactory">
+		<constructor-arg ref="sftpSessionFactory" />
+		<property name="poolSize" value="10" />
+		<property name="sessionWaitTimeout" value="1000" />
+	</bean>
+	
+	<int:channel id="sftpChannel"/>
+
+	<int-sftp:inbound-channel-adapter 
+		id="sftpInboundAdapter"
+		local-directory="${server.local.directory}" 
+		filename-pattern="*.jar" 
+		channel="sftpChannel"
+		session-factory="sftpSessionFactory" 
+		auto-create-local-directory="true"
+		remote-directory="${server.remote.directory}">
+		<int:poller fixed-rate="1000" />
+	</int-sftp:inbound-channel-adapter>
+
+	<int-sftp:outbound-channel-adapter
+		channel="sftpChannel" 
+		session-factory="sftpSessionFactory"
+		remote-directory="${server.remote.directory}">
+	</int-sftp:outbound-channel-adapter>
+
+</beans>
