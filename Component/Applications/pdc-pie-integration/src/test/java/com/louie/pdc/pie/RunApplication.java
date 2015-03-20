@@ -7,12 +7,21 @@ import org.slf4j.LoggerFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+/**
+ * Test class for SFTP Adapters
+ *
+ * @author louie.lugtu
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"classpath:/config/sftp/pie-integration-context.xml"})
 public class RunApplication {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(RunApplication.class);
 	
+	/**
+	 * Test method to validate sftp transfers.
+	 *
+	 */
 	@Test
 	public void run() {
 		try {
