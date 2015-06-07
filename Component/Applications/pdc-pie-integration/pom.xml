@@ -5,6 +5,11 @@
 	<artifactId>pdc-pie-integration</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<name>pdc-pie-integration</name>
+	<parent>
+		<groupId>com.syn</groupId>
+		<artifactId>syn-base-project</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
 
 	<properties>
 		<spring.integration.version>4.1.2.RELEASE</spring.integration.version>
@@ -106,52 +111,5 @@
 		</dependency>
 		<!-- Spring Framework Libraries : END -->
 
-		<!-- Log Libraries : START -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>${slf4j.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jcl-over-slf4j</artifactId>
-			<version>${slf4j.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>log4j-over-slf4j</artifactId>
-			<version>${slf4j.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jul-to-slf4j</artifactId>
-			<version>${slf4j.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<version>${logback.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-core</artifactId>
-			<version>${logback.version}</version>
-		</dependency>
-		<!-- Log Libraries : END -->
-
-		<!-- Testing Libraries : START -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>${junit.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-			<version>${spring.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<!-- Testing Libraries : END -->
 	</dependencies>
 </project>
